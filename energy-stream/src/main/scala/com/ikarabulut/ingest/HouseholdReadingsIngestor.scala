@@ -22,5 +22,7 @@ object HouseholdReadingsIngestor {
     val householdReadings = rawHouseholdReadings.map(HouseholdEnergyConsumption(_))
     val householdReadingsSorted = sortHouseholdEnergyData(householdReadings)
     val householdReadingsRealWorld = addRealWorldIrregularities(householdReadingsSorted)
+    val householdReadingsJSON = householdReadingsRealWorld.map(_.toJSONWithKey)
+    ingestData(topic, bootstrapServers, householdReadingsJSON)
   }
 }

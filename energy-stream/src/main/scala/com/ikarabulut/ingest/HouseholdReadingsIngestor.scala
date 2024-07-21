@@ -12,7 +12,7 @@ object HouseholdReadingsIngestor {
 
   def main(args: Array[String]): Unit = {
     if (args.isEmpty || args.length != 3) {
-      System.err.println("Usage: HouseholdReadingsIngestoor <topics> <bootstrap-servers> <household-data-path>")
+      System.err.println("Usage: HouseholdReadingsIngestor <topics> <bootstrap-servers> <household-data-path>")
       logger.error("Unable to start the HouseholdReadingsIngestoor as program arguments are missing.")
       sys.exit(1)
     }

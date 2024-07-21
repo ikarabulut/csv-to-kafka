@@ -12,8 +12,8 @@ class HouseholdEnergyConsumptionSpecs extends AnyFlatSpec with Matchers {
     val stdOrToU = "Std"
     val energyReadingTime = "2023-03-20 12:00:00.0000000"
     val energyConsumption = 0.663
-    val csvRecord = s"$householdId,$stdOrToU,$energyReadingTime,$energyConsumption"
-    val householdEnergyConsumption = HouseholdEnergyConsumption(csvRecord)
+    val csvRecords = s"$householdId,$stdOrToU,$energyReadingTime,$energyConsumption"
+    val householdEnergyConsumption = HouseholdEnergyConsumption(csvRecords)
     householdEnergyConsumption.householdId should be(householdId)
     householdEnergyConsumption.stdOrToU should be(stdOrToU)
     householdEnergyConsumption.energyReadingTime should be(Timestamp.valueOf(energyReadingTime))
@@ -25,12 +25,43 @@ class HouseholdEnergyConsumptionSpecs extends AnyFlatSpec with Matchers {
     val stdOrToU = "Std"
     val energyReadingTime = "2023-03-20 12:00:00.0000000"
     val energyConsumption = "Null"
-    val csvRecord = s"$householdId,$stdOrToU,$energyReadingTime,$energyConsumption"
-    val householdEnergyConsumption = HouseholdEnergyConsumption(csvRecord)
+    val csvRecords = s"$householdId,$stdOrToU,$energyReadingTime,$energyConsumption"
+    val householdEnergyConsumption = HouseholdEnergyConsumption(csvRecords)
     householdEnergyConsumption.householdId should be(householdId)
     householdEnergyConsumption.stdOrToU should be(stdOrToU)
     householdEnergyConsumption.energyReadingTime should be(Timestamp.valueOf(energyReadingTime))
     householdEnergyConsumption.energyConsumption should be(None)
+  }
+
+  it should "be able to convert into JSON string" in {
+    val householdId = "MAC000002"
+    val stdOrToU = "Std"
+    val energyReadingTime = "2023-03-20 12:00:00.0000000"
+    val energyConsumption = 0.663
+    val csvRecords = s"$householdId,$stdOrToU,$energyReadingTime,$energyConsumption"
+    val householdEnergyConsumption = HouseholdEnergyConsumption(csvRecords)
+    val expectedKey = householdId
+    val expectedValue = s"""{"householdId":"$householdId","stdOrToU":"$stdOrToU","energyReadingTime":"2023-03-20T17:00:00Z","energyConsumption":$energyConsumption}"""
+    val (actualKey, actualValue) = householdEnergyConsumption.toJSONWithKey
+    println(expectedValue)
+    println(actualValue)
+    expectedKey should be(actualKey)
+    expectedValue should be(actualValue)
+
+  }
+
+  it should "be able to convert into JSON string even when reading is null" in {
+    val householdId = "MAC000002"
+    val stdOrToU = "Std"
+    val energyReadingTime = "2023-03-20 12:00:00.0000000"
+    val energyConsumption = "Null"
+    val csvRecords = s"$householdId,$stdOrToU,$energyReadingTime,$energyConsumption"
+    val householdEnergyConsumption = HouseholdEnergyConsumption(csvRecords)
+    val expectedKey = householdId
+    val expectedValue = s"""{"householdId":"$householdId","stdOrToU":"$stdOrToU","energyReadingTime":"2023-03-20T17:00:00Z","energyConsumption":null}"""
+    val (actualKey, actualValue) = householdEnergyConsumption.toJSONWithKey
+    actualKey should be(expectedKey)
+    actualValue should be(expectedValue)
   }
 
   it should "be able to sort the records by reading time and householdId" in {
